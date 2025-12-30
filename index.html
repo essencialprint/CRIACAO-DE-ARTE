@@ -58,20 +58,43 @@
         button.btn-concluir { width: 100%; background-color: var(--verde-zap); color: white; font-size: 1.1rem; font-weight: bold; padding: 18px; border: none; border-radius: 50px; cursor: pointer; margin-top: 25px; transition: 0.3s; }
         button.btn-concluir:hover { background-color: var(--verde-dark); }
         footer { text-align: center; margin-top: 25px; font-size: 0.75rem; color: #adb5bd; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center;
+            z-index: 10000; padding: 20px; box-sizing: border-box;
+        }
+        .modal-content {
+            background: white; padding: 25px; border-radius: 20px;
+            max-width: 450px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: left; position: relative;
+        }
+        .modal-content h3 { color: var(--azul-essencial); margin-top: 0; border-bottom: 2px solid var(--azul-claro); padding-bottom: 10px; }
+        #resumo-pedido { 
+            white-space: pre-wrap; font-size: 0.9rem; color: #444; 
+            max-height: 300px; overflow-y: auto; background: #f9f9f9; 
+            padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px solid #eee;
+        }
+        .modal-buttons { display: flex; gap: 10px; }
+        .modal-buttons button { flex: 1; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .btn-voltar { background: #e9ecef; color: #495057; }
+        .btn-avancar { background: var(--verde-zap); color: white; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="logo-container">
-            <img src="PHOTO-2025-12-29-14-28-58.jpeg" alt="Essencial Print">
+            <img src="logo.png" alt="Essencial Print">
         </div>
 
         <h1>Criação da Arte Personalizada</h1>
         
         <div class="aviso-topo">
-            Este formulário é para quem já está decidido a confirmar o pedido em caso de aprovação da arte.<br><br>
-            As informações são importantes para a <strong>Essencial Print</strong> entender melhor as suas ideias.
+            <strong>Dica de ouro:</strong> preencher esse formulário é a maneira mais rápida para <em>agilizar o seu atendimento</em>! Com tudo organizado, o designer já começa o trabalho sabendo exatamente o que você quer.<br><br>
+            Em seguida vocês vão conversar pelo WhatsApp para alinhar melhor as ideias até finalizar a arte. 🚀
         </div>
 
         <div class="aviso-formatos">
@@ -217,7 +240,7 @@
 
                     <div class="check-container">
                         <input type="checkbox" id="cienteEntrega" required>
-                        <span>Estou ciente que alterar demasiadamente a arte pode prejudicar o planejamento de entrega do pedido. *</span>
+                        <span>Estou ciente que muitas alterações na arte pode prejudicar o planejamento de entrega do pedido. *</span>
                     </div>
 
                     <button type="button" class="btn-concluir" onclick="concluir()">Enviar informações para o WhatsApp</button>
@@ -227,7 +250,30 @@
         <footer>Esse formulário é criação exclusiva da <strong>Essencial Print</strong></footer>
     </div>
 
+    <div id="modalConfirmacao" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Confirmar Envio</h3>
+            <p>Confira os dados que serão enviados:</p>
+            <div id="resumo-pedido"></div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-voltar" onclick="fecharModal()">Voltar</button>
+                <button type="button" class="btn-avancar" onclick="confirmarEnvio()">Avançar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let mensagemGlobal = "";
+
+        function fecharModal() {
+            document.getElementById('modalConfirmacao').style.display = 'none';
+        }
+
+        function confirmarEnvio() {
+            window.open(`https://wa.me/5577999977481?text=${encodeURIComponent(mensagemGlobal)}`, '_blank');
+            fecharModal();
+        }
+
         function mudarDepartamento() {
             const dep = document.querySelector('input[name="dep"]:checked').value;
             document.getElementById('camposPrincipais').className = 'visible';
@@ -282,13 +328,30 @@
 
         function concluir() {
             const depEl = document.querySelector('input[name="dep"]:checked');
-            if(!depEl) return;
+            if(!depEl) { alert("Escolha um departamento."); return; }
+            
             const dep = depEl.value;
-            const nome = document.getElementById('nome').value;
-            const equipe = document.getElementById('equipe').value;
-            const ciente = document.getElementById('cienteEntrega').checked;
+            const nome = document.getElementById('nome').value.trim();
+            const equipe = document.getElementById('equipe').value.trim();
+            const cienteEntrega = document.getElementById('cienteEntrega').checked;
+            
+            if(!nome || !equipe || !cienteEntrega) { 
+                alert("⚠️ Por favor, preencha o Nome, Nome do Pedido e aceite os termos de entrega para continuar."); 
+                return; 
+            }
 
-            if(!nome || !equipe || !ciente) { alert("Preencha os campos obrigatórios (*)"); return; }
+            if(dep === 'Estamparia') {
+                if(!document.getElementById('tipoPedido').value) {
+                    alert("⚠️ Por favor, selecione o Tipo de Pedido.");
+                    return;
+                }
+                if(document.getElementById('tipoPedido').value === "Uniformes Esportivos") {
+                    if(!document.getElementById('cienteAdicionais').checked) {
+                        alert("⚠️ Você precisa estar ciente dos valores adicionais para prosseguir.");
+                        return;
+                    }
+                }
+            }
 
             let msg = `*NOVA SOLICITAÇÃO DE ARTE*\n\n`;
             msg += `🏢 *SETOR:* ${dep === 'Comunicacao' ? 'COMUNICACAO' : 'ESTAMPARIA / CONFECÇÃO'}\n`;
@@ -331,10 +394,12 @@
 
             msg += `🎨 *Cores:* ${document.getElementById('cores').value || "Não informado"}\n`;
             msg += `💡 *Ideia:* ${document.getElementById('ideia').value || "Não informado"}\n\n`;
-            msg += `✅ *Eu, como cliente, aceito os termos*\n\n`;
+            msg += `✅ _Ciente de que os dados seguem direto para a produção, não farei alterações para evitar erros ou atrasos na entrega._\n\n`;
             msg += `📎 *IMPORTANTE:* Enviarei os arquivos necessários logo após esta mensagem.`;
 
-            window.open(`https://wa.me/5577999977481?text=${encodeURIComponent(msg)}`, '_blank');
+            mensagemGlobal = msg;
+            document.getElementById('resumo-pedido').innerText = msg;
+            document.getElementById('modalConfirmacao').style.display = 'flex';
         }
     </script>
 </body>
