@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criação da Arte Personalizada - Essencial Print</title>
+    <style>
+        :root {
+            --verde-zap: #25d366;
+            --verde-dark: #128c7e;
+            --azul-essencial: #1e3a8a;
+            --azul-claro: #e7f5ff;
+            --azul-borda: #339af0;
+            --fundo-pagina: #f4f4f9;
+            --balao-cinza: #f1f3f5;
+            --texto-suave: #495057;
+            --dourado: #d4af37;
+            --dourado-fundo: #fffdf2;
+        }
+
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--fundo-pagina); margin: 0; padding: 15px; color: #212529; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .logo-container { text-align: center; margin-bottom: 15px; }
+        .logo-container img { max-width: 160px; height: auto; }
+        h1 { text-align: center; color: var(--azul-essencial); font-size: 1.5rem; margin-bottom: 20px; text-transform: uppercase; }
+
+        .aviso-topo { background-color: var(--balao-cinza); color: #000; padding: 15px; border-radius: 10px; margin-bottom: 10px; font-size: 0.95rem; line-height: 1.5; border-left: 5px solid #ced4da; }
+        .aviso-formatos { background-color: #f8f9fa; color: #666; padding: 10px 15px; border-radius: 10px; margin-bottom: 10px; font-size: 0.8rem; line-height: 1.4; border: 1px solid #e9ecef; }
+        .aviso-obrigatorio { background-color: var(--azul-claro); color: var(--azul-essencial); padding: 10px; border-radius: 8px; margin-bottom: 25px; font-size: 0.85rem; font-weight: 600; text-align: center; border: 1px solid var(--azul-borda); }
+
+        label { display: block; margin-top: 18px; font-weight: 700; font-size: 0.85rem; color: var(--texto-suave); }
+        input[type="text"], select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #dee2e6; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+
+        .grid-opcoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .opcao-item { position: relative; }
+        .opcao-item input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+        .opcao-item label { 
+            background: #fff; border: 2px solid #dee2e6; padding: 12px; border-radius: 8px; 
+            text-align: center; cursor: pointer; font-weight: 600; font-size: 0.85rem; margin-top: 0;
+            transition: 0.2s; display: block; color: var(--texto-suave);
+        }
+        .opcao-item input:checked + label { background: var(--azul-essencial); border-color: var(--azul-essencial); color: #fff; }
+
+        .hidden { display: none; }
+        .visible { display: block; animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .box-config { padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px solid #e9ecef; background: #f8f9fa; }
+        .box-ouro { background: var(--dourado-fundo); border: 1px solid var(--dourado); }
+        .box-ouro label { color: #996515; }
+        
+        .nota-arquivos { background-color: #e7f5ff; color: #1971c2; padding: 12px; text-align: center; border-radius: 8px; margin-top: 20px; font-size: 0.85rem; font-weight: 600; }
+        .info-catalogo { font-size: 0.8rem; color: var(--azul-essencial); margin-top: 5px; font-weight: 600; }
+        
+        .check-container { background-color: #fff9db; padding: 15px; border-radius: 8px; margin-top: 10px; display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; border: 1px solid #ffe066; }
+        .check-container input { width: 18px; height: 18px; margin-top: 2px; }
+
+        button.btn-concluir { width: 100%; background-color: var(--verde-zap); color: white; font-size: 1.1rem; font-weight: bold; padding: 18px; border: none; border-radius: 50px; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        button.btn-concluir:hover { background-color: var(--verde-dark); }
+        footer { text-align: center; margin-top: 25px; font-size: 0.75rem; color: #adb5bd; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo-container">
+            <img src="logo.png" alt="Essencial Print">
+        </div>
+
+        <h1>Criação da Arte Personalizada</h1>
+        
+        <div class="aviso-topo">
+            Este formulário é para quem já está decidido a confirmar o pedido em caso de aprovação da arte.<br><br>
+            As informações são importantes para a <strong>Essencial Print</strong> entender melhor as suas ideias.
+        </div>
+
+        <div class="aviso-formatos">
+            Enviaremos o layout pelo WhatsApp somente em formato de imagem.<br>
+            Não encaminhamos arquivos em PDF, CorelDraw ou PhotoShop.
+        </div>
+
+        <div class="aviso-obrigatorio">
+            ⚠️ Os campos marcados com asterisco (*) são de preenchimento obrigatório.
+        </div>
+
+        <form id="formArte">
+            <label>Qual departamento deseja atendimento? *</label>
+            <div class="grid-opcoes">
+                <div class="opcao-item">
+                    <input type="radio" name="dep" id="depEstamparia" value="Estamparia" onclick="mudarDepartamento()">
+                    <label for="depEstamparia">Estamparia / Confecção</label>
+                </div>
+                <div class="opcao-item">
+                    <input type="radio" name="dep" id="depComunicacao" value="Comunicacao" onclick="mudarDepartamento()">
+                    <label for="depComunicacao">Comunicação Visual</label>
+                </div>
+            </div>
+
+            <div id="camposPrincipais" class="hidden">
+                <label>Nome do Cliente *</label>
+                <input type="text" id="nome" placeholder="Seu nome" required>
+
+                <label>Nome do Pedido *</label>
+                <input type="text" id="equipe" placeholder="Ex.: Uniforme da Equipe/Empresa/Time 'X' - 2026" required>
+
+                <div id="fluxoEstamparia" class="hidden">
+                    <label>Tipo de pedido *</label>
+                    <select id="tipoPedido" onchange="fluxoInternoEstamparia()">
+                        <option value="">Selecione...</option>
+                        <option value="Uniformes Esportivos">Uniformes Esportivos</option>
+                        <option value="Coletes Esportivos">Coletes Esportivos</option>
+                        <option value="Camisas em Geral">Camisas em Geral</option>
+                        <option value="Camisas em Geral + Calças">Camisas em Geral + Calças</option>
+                        <option value="Bandeiras">Bandeiras</option>
+                        <option value="Paineis sublimados">Painéis sublimados</option>
+                    </select>
+
+                    <div id="secUniformes" class="hidden">
+                        <label>Composição do Uniforme *</label>
+                        <select id="compUniforme">
+                            <option value="Somente Camisa">Somente Camisa</option>
+                            <option value="Camisa + Short">Camisa + Short</option>
+                            <option value="Camisa + Short + Meião">Camisa + Short + Meião</option>
+                        </select>
+                        <label>Linha Esportiva *</label>
+                        <select id="linha" onchange="alternarLinhas()">
+                            <option value="">Selecione a Linha...</option>
+                            <option value="Prata">Linha Prata</option>
+                            <option value="Ouro">Linha Ouro</option>
+                        </select>
+
+                        <div id="boxPrata" class="hidden box-config">
+                            <label>Tipo de Gola *</label>
+                            <select id="golaPrata"><option value="Redonda">Redonda</option><option value="V">V</option></select>
+                            <label>Tipo de Modelagem *</label>
+                            <select id="modelagemPrata"><option value="Reta">Reta</option></select>
+                            <label>Nomes Individuais? *</label>
+                            <select id="nomesPrata"><option value="Sim">Sim</option><option value="Não">Não</option></select>
+                        </div>
+
+                        <div id="boxOuro" class="hidden box-config box-ouro">
+                            <label>Tipo de Gola *</label>
+                            <select id="golaOuro">
+                                <option value="Redonda">Redonda</option><option value="V">V</option><option value="V Reta">V Reta</option><option value="V Especial">V Especial</option><option value="Dupla">Dupla</option><option value="Esportiva">Esportiva</option>
+                            </select>
+                            <label>Tipo de Modelagem *</label>
+                            <select id="modelagemOuro"><option value="Reta">Reta</option><option value="Raglan">Raglan</option></select>
+                            <label>Tipo de Malha *</label>
+                            <select id="malhaOuro"><option value="Dry">Dry</option><option value="Jacquard">Jacquard</option><option value="3D">3D</option></select>
+                            <label>Tipo de Punho *</label>
+                            <select id="punhoOuro"><option value="Padrão">Padrão</option><option value="Personalizado">Personalizado</option></select>
+                            <label>Tipo de Escudo *</label>
+                            <select id="escudoOuro"><option value="Sublimado">Sublimado</option><option value="Patch 3D">Patch 3D</option><option value="Patch Profissional">Patch Profissional</option></select>
+                            <label>Nomes Individuais? *</label>
+                            <select id="nomesOuro"><option value="Sim">Sim</option><option value="Não">Não</option></select>
+                        </div>
+                    </div>
+
+                    <div id="secCamisas" class="hidden">
+                        <div id="boxSegmentoGeral">
+                            <label>Segmento da Camisa *</label>
+                            <select id="segCamisa" onchange="verificarOutroCamisa()">
+                                <option value="Camisas Religiosas">Camisas Religiosas</option>
+                                <option value="Fardamentos em Geral">Fardamentos em Geral</option>
+                                <option value="Fardamento Escolar">Fardamento Escolar</option>
+                                <option value="Camisas para Eventos">Camisas para Eventos</option>
+                                <option value="Outro">Outro...</option>
+                            </select>
+                            <div id="boxOutroCamisa" class="hidden">
+                                <input type="text" id="outroCamisaTexto" placeholder="Especifique o segmento desejado">
+                            </div>
+                        </div>
+                        <label>Tipo de Gola *</label>
+                        <select id="golaGeral"><option value="Redonda">Redonda</option><option value="V">V</option><option value="Polo">Polo</option></select>
+                    </div>
+                </div>
+
+                <div id="fluxoComunicacao" class="hidden">
+                    <label>Selecione os itens desejados: *</label>
+                    <div class="grid-opcoes">
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv1" value="Impressão em lona"><label for="cv1">Impressão em lona</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv2" value="Adesivos"><label for="cv2">Adesivos</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv3" value="Faixa"><label for="cv3">Faixa</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv4" value="Fachada Comercial"><label for="cv4">Fachada Comercial</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv5" value="Placas de Sinalização"><label for="cv5">Placas de Sinalização</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv6" value="Placas de Identificação (PVC)"><label for="cv6">Placas (PVC)</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv7" value="Placas de Trânsito (ACM)"><label for="cv7">Placas (ACM)</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv8" value="Display (MDF)"><label for="cv8">Display (MDF)</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv9" value="Troféus"><label for="cv9">Troféus</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv10" value="Medalhas"><label for="cv10">Medalhas</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv11" value="Big Hands / Cartazes"><label for="cv11">Big Hands / Cartazes</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv12" value="Outdoor"><label for="cv12">Outdoor</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv13" value="Paineis de papel"><label for="cv13">Painéis de papel</label></div>
+                        <div class="opcao-item"><input type="checkbox" name="comv" id="cv14" value="Brindes em Acrílico"><label for="cv14">Brindes em Acrílico</label></div>
+                    </div>
+                    <label>Outros...</label>
+                    <input type="text" id="outroComunicacao" placeholder="Especifique aqui o que deseja">
+                </div>
+
+                <div id="camposComuns" class="hidden">
+                    <label>Cores Predominantes</label>
+                    <input type="text" id="cores" placeholder="Ex: Azul e Branco">
+
+                    <label>Descreva sua ideia</label>
+                    <textarea id="ideia" rows="6"></textarea>
+                    
+                    <div id="divCatalogo" class="info-catalogo">💡 Se preferir, solicite o catálogo aos nossos atendentes!</div>
+
+                    <div id="divNotaArquivos" class="nota-arquivos">
+                        Referências, inspirações e demais detalhes devem ser enviadas pelo WhatsApp após concluir.
+                    </div>
+
+                    <div class="check-container hidden" id="checkAdicionais">
+                        <input type="checkbox" id="cienteAdicionais">
+                        <span>Os adicionais e seus respectivos valores estão no PDF de apresentação inicial. Estou ciente disso. *</span>
+                    </div>
+
+                    <div class="check-container">
+                        <input type="checkbox" id="cienteEntrega" required>
+                        <span>Estou ciente que alterar demasiadamente a arte pode prejudicar o planejamento de entrega do pedido. *</span>
+                    </div>
+
+                    <button type="button" class="btn-concluir" onclick="concluir()">Enviar informações para o WhatsApp</button>
+                </div>
+            </div>
+        </form>
+        <footer>Esse formulário é criação exclusiva da <strong>Essencial Print</strong></footer>
+    </div>
+
+    <script>
+        function mudarDepartamento() {
+            const dep = document.querySelector('input[name="dep"]:checked').value;
+            document.getElementById('camposPrincipais').className = 'visible';
+            document.getElementById('camposComuns').className = 'visible';
+            
+            if(dep === 'Estamparia') {
+                document.getElementById('fluxoEstamparia').className = 'visible';
+                document.getElementById('fluxoComunicacao').className = 'hidden';
+                document.getElementById('divCatalogo').className = 'info-catalogo visible';
+                document.getElementById('equipe').placeholder = "Ex.: Uniforme da Equipe/Empresa/Time 'X' - 2026";
+                fluxoInternoEstamparia();
+            } else {
+                document.getElementById('fluxoEstamparia').className = 'hidden';
+                document.getElementById('fluxoComunicacao').className = 'visible';
+                document.getElementById('divCatalogo').className = 'hidden';
+                document.getElementById('checkAdicionais').className = 'hidden';
+                document.getElementById('equipe').placeholder = "Ex.: Faixa de inauguração do Mercado 'X' - 2026";
+                document.getElementById('ideia').placeholder = "Ex.: Quero um banner 1x1m para promoção de frutas // Lembre-se de informar o tamanho de cada item selecionado.";
+            }
+        }
+
+        function verificarOutroCamisa() {
+            const val = document.getElementById('segCamisa').value;
+            document.getElementById('boxOutroCamisa').className = (val === "Outro") ? 'visible' : 'hidden';
+        }
+
+        function fluxoInternoEstamparia() {
+            const tipo = document.getElementById('tipoPedido').value;
+            const txtIdeia = document.getElementById('ideia');
+
+            document.getElementById('secUniformes').className = (tipo === "Uniformes Esportivos") ? 'visible' : 'hidden';
+            document.getElementById('secCamisas').className = (tipo.includes("Camisas em Geral")) ? 'visible' : 'hidden';
+            document.getElementById('boxSegmentoGeral').className = (tipo === "Camisas em Geral") ? 'visible' : 'hidden';
+            document.getElementById('checkAdicionais').className = (tipo === "Uniformes Esportivos") ? 'check-container visible' : 'hidden';
+
+            if(tipo === "Uniformes Esportivos" || tipo === "Coletes Esportivos") {
+                txtIdeia.placeholder = "Ex.: Na frente, quero faixas verticais, escudo centralizado, patrocínio na barriga...";
+            } else if(tipo.includes("Camisas em Geral")) {
+                txtIdeia.placeholder = "Ex.: Na frente, quero uma imagem X, com um detalhe dourado, e nas costas, quero um objeto Y grande na parte superior…";
+            } else if(tipo === "Bandeiras" || tipo === "Paineis sublimados") {
+                txtIdeia.placeholder = "Ex.: Quero uma bandeira/painel com o tamanho 90x1,30cm, com a imagem X centralizada…";
+            } else {
+                txtIdeia.placeholder = "Descreva os detalhes da sua ideia aqui...";
+            }
+        }
+
+        function alternarLinhas() {
+            const linha = document.getElementById('linha').value;
+            document.getElementById('boxPrata').className = (linha === 'Prata') ? 'visible box-config' : 'hidden';
+            document.getElementById('boxOuro').className = (linha === 'Ouro') ? 'visible box-config box-ouro' : 'hidden';
+        }
+
+        function concluir() {
+            const depEl = document.querySelector('input[name="dep"]:checked');
+            if(!depEl) return;
+            const dep = depEl.value;
+            const nome = document.getElementById('nome').value;
+            const equipe = document.getElementById('equipe').value;
+            const ciente = document.getElementById('cienteEntrega').checked;
+
+            if(!nome || !equipe || !ciente) { alert("Preencha os campos obrigatórios (*)"); return; }
+
+            let msg = `*NOVA SOLICITAÇÃO DE ARTE*\n\n`;
+            msg += `🏢 *SETOR:* ${dep === 'Comunicacao' ? 'COMUNICACAO' : 'ESTAMPARIA / CONFECÇÃO'}\n`;
+            msg += `👤 *Cliente:* ${nome}\n`;
+            msg += `📋 *Pedido:* ${equipe}\n`;
+            msg += `---------------------------\n`;
+
+            if(dep === 'Estamparia') {
+                let tipo = document.getElementById('tipoPedido').value;
+                msg += `👕 *Tipo:* ${tipo}\n`;
+                
+                if(tipo === "Uniformes Esportivos") {
+                    const linha = document.getElementById('linha').value;
+                    msg += `📋 *Composição:* ${document.getElementById('compUniforme').value}\n`;
+                    msg += `⭐ *Linha:* ${linha}\n`;
+                    if(linha === "Prata") {
+                        msg += `▫️ *Gola:* ${document.getElementById('golaPrata').value}\n`;
+                        msg += `▫️ *Modelagem:* ${document.getElementById('modelagemPrata').value}\n`;
+                        msg += `▫️ *Nomes Indiv.:* ${document.getElementById('nomesPrata').value}\n`;
+                    } else if(linha === "Ouro") {
+                        msg += `▫️ *Gola:* ${document.getElementById('golaOuro').value}\n`;
+                        msg += `▫️ *Modelagem:* ${document.getElementById('modelagemOuro').value}\n`;
+                        msg += `▫️ *Malha:* ${document.getElementById('malhaOuro').value}\n`;
+                        msg += `▫️ *Punho:* ${document.getElementById('punhoOuro').value}\n`;
+                        msg += `▫️ *Escudo:* ${document.getElementById('escudoOuro').value}\n`;
+                        msg += `▫️ *Nomes Indiv.:* ${document.getElementById('nomesOuro').value}\n`;
+                    }
+                } else if(tipo.includes("Camisas em Geral")) {
+                    let seg = document.getElementById('segCamisa').value;
+                    if(seg === "Outro") seg = document.getElementById('outroCamisaTexto').value;
+                    msg += `▫️ *Segmento:* ${seg}\n`;
+                    msg += `▫️ *Gola:* ${document.getElementById('golaGeral').value}\n`;
+                }
+            } else {
+                let sel = [];
+                document.querySelectorAll('input[name="comv"]:checked').forEach(c => sel.push(c.value));
+                if(document.getElementById('outroComunicacao').value) sel.push(document.getElementById('outroComunicacao').value);
+                msg += `🖼️ *Itens:* ${sel.join(', ') || 'Nenhum selecionado'}\n`;
+            }
+
+            msg += `🎨 *Cores:* ${document.getElementById('cores').value || "Não informado"}\n`;
+            msg += `💡 *Ideia:* ${document.getElementById('ideia').value || "Não informado"}\n\n`;
+            msg += `✅ *Eu, como cliente, aceito os termos*\n\n`;
+            msg += `📎 *IMPORTANTE:* Enviarei os arquivos necessários logo após esta mensagem.`;
+
+            window.open(`https://wa.me/5577999977481?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
